@@ -538,10 +538,10 @@ header a.button {
 }
 aside a.button {
   display: block;
-  width: 350px;
+  width: 420px;
   padding-left: 64px;
   margin-bottom: 20px;
-  font-size: 20px;
+  font-size: 18px;
   background: transparent url(../images/download-button.png) 0 0 no-repeat;
 }
 
