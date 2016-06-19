@@ -1,0 +1,5 @@
+name: BanManagement
+version: 0.1.0
+main: com.breachuniverse.banmanagement.BanManagement
+description: Manages all of the ban, kicks and mutes.
+authors: [Azoraqua]

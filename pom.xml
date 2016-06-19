@@ -8,6 +8,13 @@
     <artifactId>BanManagement</artifactId>
     <version>0.1.0-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>bungeecord-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>net.md-5</groupId>
