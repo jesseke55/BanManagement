@@ -1,5 +1,9 @@
 package com.breachuniverse.banmanagement;
 
+import com.breachuniverse.banmanagement.command.BanCommand;
+import com.breachuniverse.banmanagement.command.UnbanCommand;
+import com.breachuniverse.banmanagement.task.DatabaseCreateTask;
+import com.breachuniverse.banmanagement.task.TableCreateTask;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -9,6 +13,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class BanManagement extends Plugin {
 
@@ -17,6 +22,8 @@ public class BanManagement extends Plugin {
     private static File configFile;
 
     private static HikariDataSource dataSource;
+
+    private BanManager banManager;
 
     @Override
     public void onEnable() {
@@ -50,11 +57,18 @@ public class BanManagement extends Plugin {
         hikariConfig.setMaximumPoolSize(10);
         hikariConfig.addDataSourceProperty("serverName", databaseSection.getString("host"));
         hikariConfig.addDataSourceProperty("port", String.valueOf(databaseSection.getInt("port")));
-        hikariConfig.addDataSourceProperty("databaseName", databaseSection.getString("database"));
         hikariConfig.addDataSourceProperty("user", databaseSection.getString("username"));
         hikariConfig.addDataSourceProperty("password", databaseSection.getString("password"));
 
         dataSource = new HikariDataSource(hikariConfig);
+
+        getProxy().getPluginManager().registerCommand(this, new BanCommand());
+        getProxy().getPluginManager().registerCommand(this, new UnbanCommand());
+
+        getProxy().getScheduler().schedule(this, new DatabaseCreateTask(), 1, TimeUnit.SECONDS);
+        getProxy().getScheduler().schedule(this, new TableCreateTask(), 1, TimeUnit.SECONDS);
+
+        banManager = new BanManager();
     }
 
     @Override
@@ -84,6 +98,10 @@ public class BanManagement extends Plugin {
 
     public static HikariDataSource getDataSource() {
         return dataSource;
+    }
+
+    public BanManager getBanManager() {
+        return banManager;
     }
 
     /*
