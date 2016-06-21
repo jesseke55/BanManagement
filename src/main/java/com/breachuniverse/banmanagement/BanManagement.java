@@ -1,11 +1,14 @@
 package com.breachuniverse.banmanagement;
 
+import com.breachuniverse.banmanagement.api.BanManagementAPI;
 import com.breachuniverse.banmanagement.command.BanCommand;
 import com.breachuniverse.banmanagement.command.UnbanCommand;
 import com.breachuniverse.banmanagement.task.DatabaseCreateTask;
 import com.breachuniverse.banmanagement.task.TableCreateTask;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -13,17 +16,17 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class BanManagement extends Plugin {
+public class BanManagement extends Plugin implements BanManagementAPI {
 
     private static final ConfigurationProvider provider = ConfigurationProvider.getProvider(YamlConfiguration.class);
     private static Configuration config;
     private static File configFile;
 
     private static HikariDataSource dataSource;
-
-    private BanManager banManager;
 
     @Override
     public void onEnable() {
@@ -67,13 +70,18 @@ public class BanManagement extends Plugin {
 
         getProxy().getScheduler().schedule(this, new DatabaseCreateTask(), 1, TimeUnit.SECONDS);
         getProxy().getScheduler().schedule(this, new TableCreateTask(), 1, TimeUnit.SECONDS);
-
-        banManager = new BanManager();
     }
 
     @Override
     public void onDisable() {
         saveConfig();
+
+        if (dataSource != null) {
+            dataSource.close();
+            dataSource = null;
+        }
+
+        config = null;
     }
 
     public static Configuration getConfig() {
@@ -100,13 +108,34 @@ public class BanManagement extends Plugin {
         return dataSource;
     }
 
-    public BanManager getBanManager() {
-        return banManager;
+    @Override
+    public boolean banPlayer(ProxiedPlayer player, BanType banType, String reason, Timestamp expire, CommandSender issuer) {
+        return Internals.banPlayer(player, banType, reason, expire, issuer);
     }
 
-    /*
-     * API Methods starting here.
-     *
-     * TODO: Add API methods implementation.
-     */
+    @Override
+    public boolean unbanPlayer(ProxiedPlayer player) {
+        return Internals.unbanPlayer(player);
+    }
+
+    @Override
+    public boolean isBanned(ProxiedPlayer player) {
+        return Internals.isBanned(player);
+    }
+
+    @Override
+    @Deprecated
+    public Set<Object> getBanData(ProxiedPlayer player) {
+        return Internals.getBanData(player);
+    }
+
+    @Override
+    public boolean createDatabase() {
+        return Internals.createDatabase();
+    }
+
+    @Override
+    public boolean createTable() {
+        return Internals.createTable();
+    }
 }

@@ -1,1 +1,1 @@
-CREATE DATABASE `banmanagement`;
+CREATE DATABASE IF NOT EXISTS `banmanagement`;
