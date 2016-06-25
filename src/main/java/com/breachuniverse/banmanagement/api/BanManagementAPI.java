@@ -1,11 +1,10 @@
 package com.breachuniverse.banmanagement.api;
 
-import com.breachuniverse.banmanagement.BanType;
-import net.md_5.bungee.api.CommandSender;
+import com.breachuniverse.banmanagement.Ban;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Written and copyrighted by Azoraqua (Also known as Ronald).
@@ -17,13 +16,12 @@ public interface BanManagementAPI {
      *
      * @param player  The player to be banned.
      * @param banType The bantype of the ban (Player or IP).
-     * @param reason  The reason why the player is banned.
      * @param expire  The expire when the player is unbanned.
-     * @param issuer  The player/console who banned the player.
+     * @param reason  The reason why the player is banned.
      * @return The result of the query execution.
      * @since 0.1.0
      */
-    boolean banPlayer(ProxiedPlayer player, BanType banType, String reason, Timestamp expire, CommandSender issuer);
+    boolean banPlayer(ProxiedPlayer player, Ban.Type banType, Timestamp expire, String reason);
 
     /**
      * Unban a player through the BanManagement API.
@@ -39,6 +37,7 @@ public interface BanManagementAPI {
      *
      * @param player The player to check for.
      * @return True if the player is banned otherwise false.
+     * @since 0.1.0
      */
     boolean isBanned(ProxiedPlayer player);
 
@@ -47,24 +46,15 @@ public interface BanManagementAPI {
      *
      * @param player The player to get the data for.
      * @return A set of Object's about the player's ban.
-     */
-    Set<Object> getBanData(ProxiedPlayer player);
-
-    /**
-     * Create database for BanManagement through the BanManagement API.
-     *
-     * @return The result of the query execution.
-     * @apiNote Use this with caution it could mess up the plugin.
      * @since 0.1.0
      */
-    boolean createDatabase();
+    Ban getBanData(ProxiedPlayer player);
 
     /**
-     * Create table for BanManagement through the BanManagement API.
+     * Get all the ban data in a collection.
      *
-     * @return The result of the query execution.
-     * @apiNote Use this with caution it could mess up the plugin.
+     * @return A collection of all the ban data.
      * @since 0.1.0
      */
-    boolean createTable();
+    Collection<Ban> getAllBans();
 }

@@ -1,1 +1,0 @@
-SELECT COUNT(*) FROM `bans` WHERE uuid=? > 0;
