@@ -48,7 +48,7 @@ public class BanManagement extends Plugin implements BanManagementAPI {
             if (databaseSection == null || config.get("database") == null) {
                 databaseSection = new Configuration();
                 databaseSection.set("host", "");
-                databaseSection.set("port", 0);
+                databaseSection.set("port", 3306);
                 databaseSection.set("username", "");
                 databaseSection.set("password", "");
                 databaseSection.set("database", "");
